@@ -1,0 +1,15 @@
+{
+  "name": "Your Company",
+  "tagline": "360° project walkthroughs",
+  "accent": "#f2994a",
+  "logo": "",
+  "contact": {
+    "phone": "",
+    "email": "",
+    "website": ""
+  },
+  "listProjects": false,
+  "noindex": true,
+  "maxImageWidth": 8192,
+  "autoRotate": true
+}

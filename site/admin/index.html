@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#0d0f12">
+<title>Panorama Manager</title>
+<link rel="stylesheet" href="../assets/app.css">
+<link rel="stylesheet" href="admin.css">
+</head>
+<body class="admin">
+<header class="topbar">
+  <a class="logo" href="#/">
+    <span class="logo-mark">360</span>
+    <span>Panorama Manager</span>
+  </a>
+  <div class="top-right">
+    <a class="deploy-pill" id="deploy" hidden target="_blank" rel="noopener"></a>
+    <a class="top-link" href="#/settings" id="nav-settings" hidden>Settings</a>
+  </div>
+</header>
+<main id="app" class="admin-main"><p class="loading">Loading…</p></main>
+<div class="modal-backdrop" id="modal" hidden></div>
+<div class="toast" id="toast" hidden></div>
+<script src="../assets/vendor/qrcode.js"></script>
+<script src="../assets/qr.js"></script>
+<script src="admin.js"></script>
+</body>
+</html>

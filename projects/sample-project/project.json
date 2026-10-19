@@ -1,0 +1,10 @@
+{
+  "title": "Sample Project",
+  "client": "Demo Client",
+  "description": "A demo project so you can see how the viewer works. Delete this folder once you've added your own.",
+  "date": "2026-10-19",
+  "panoramas": [
+    { "file": "main-hall.jpg", "title": "Main Hall", "yaw": 0, "pitch": 0 },
+    { "file": "exterior.jpg", "title": "Exterior" }
+  ]
+}

@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0d0f12">
+{{ROBOTS}}
+<title>{{COMPANY}}</title>
+<link rel="stylesheet" href="{{ASSETS}}/app.css">
+<style>:root{--accent:{{ACCENT}}}</style>
+</head>
+<body class="home">
+<main class="home-wrap">
+  <header class="home-hero">
+    <div class="brand-mini" id="brand"></div>
+    <div><h1>{{COMPANY}}</h1><p>{{TAGLINE}}</p></div>
+  </header>
+  <div class="grid" id="grid"></div>
+  <div class="empty-note" id="empty" hidden>
+    <div class="big">360°</div>
+    <h2>Scan your project's QR code</h2>
+    <p>Each project has its own private link. If you were sent one, open it to see your 360° views.</p>
+  </div>
+</main>
+<script type="application/json" id="data">{{DATA}}</script>
+<script>
+(function () {
+  var D = JSON.parse(document.getElementById("data").textContent), site = D.site || {};
+  var b = document.getElementById("brand");
+  if (site.logo) { var i = new Image(); i.src = site.logo; b.appendChild(i); }
+  else if (site.name) b.textContent = site.name.split(/\s+/).map(function (w) { return w[0]; }).join("").slice(0, 3).toUpperCase();
+  else b.hidden = true;
+  var grid = document.getElementById("grid");
+  if (!D.projects.length) { document.getElementById("empty").hidden = false; return; }
+  D.projects.forEach(function (p) {
+    var a = document.createElement("a");
+    a.className = "card"; a.href = "p/" + p.slug + "/";
+    a.innerHTML = '<img loading="lazy" alt=""><div><h3></h3><p></p></div>';
+    a.querySelector("img").src = p.thumb;
+    a.querySelector("h3").textContent = p.title;
+    a.querySelector("p").textContent = [p.client, p.count + (p.count === 1 ? " view" : " views")].filter(Boolean).join(" · ");
+    grid.appendChild(a);
+  });
+})();
+</script>
+</body>
+</html>

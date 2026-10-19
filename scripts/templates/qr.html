@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+{{ROBOTS}}
+<title>QR code · {{TITLE}}</title>
+<link rel="stylesheet" href="{{ASSETS}}/app.css">
+<link rel="stylesheet" href="{{ASSETS}}/qrcard.css">
+<style>:root{--accent:{{ACCENT}}}</style>
+</head>
+<body class="qrpage">
+<main class="qr-layout">
+  <section class="tools">
+    <a class="back" href="../">← Open the 360° view</a>
+    <h1>QR code</h1>
+    <p class="lede">Print this card, add it to a sign or proposal, or text the image to your client. Anyone who scans it opens the 360° view on their phone.</p>
+
+    <label class="field">
+      <span>QR opens</span>
+      <select id="target"></select>
+    </label>
+    <label class="field">
+      <span>Card heading</span>
+      <input id="heading" value="Scan to explore in 360°">
+    </label>
+
+    <div class="link-row">
+      <input id="url" readonly>
+      <button class="btn" id="copy">Copy</button>
+    </div>
+
+    <div class="actions">
+      <button class="btn primary" id="print">Print card</button>
+      <button class="btn" id="dl-card">Card image (PNG)</button>
+      <button class="btn" id="dl-png">QR only (PNG)</button>
+      <button class="btn" id="dl-svg">QR only (SVG)</button>
+    </div>
+  </section>
+
+  <section class="card-preview">
+    <article class="print-card" id="card">
+      <header>
+        <div class="pc-brand" id="pc-brand"></div>
+        <div class="pc-company" id="pc-company"></div>
+      </header>
+      <h2 id="pc-title">{{TITLE}}</h2>
+      <p class="pc-sub" id="pc-sub"></p>
+      <div class="pc-qr"><canvas id="qr"></canvas></div>
+      <p class="pc-cta" id="pc-cta">Scan to explore in 360°</p>
+      <p class="pc-url" id="pc-url"></p>
+    </article>
+  </section>
+</main>
+<script type="application/json" id="data">{{DATA}}</script>
+<script src="{{ASSETS}}/vendor/qrcode.js"></script>
+<script src="{{ASSETS}}/qr.js"></script>
+<script src="{{ASSETS}}/qrcard.js"></script>
+</body>
+</html>
