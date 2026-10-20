@@ -5,6 +5,10 @@
   "date": "2026-10-19",
   "panoramas": [
     {
+      "file": "panorama16k.jpg",
+      "title": "Panorama16k"
+    },
+    {
       "file": "panorama3d2k-000-2.jpg",
       "title": "Panorama3D2K 000"
     },
