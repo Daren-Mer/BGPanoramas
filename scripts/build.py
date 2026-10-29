@@ -203,7 +203,7 @@ def build_project(folder: Path, site: dict) -> dict | None:
         TITLE=esc(project["title"]),
         COMPANY=esc(site.get("name", "")),
         DESCRIPTION=esc(desc),
-        ACCENT=esc(site.get("accent", "#f2994a")),
+        ACCENT=esc(site.get("accent", "#0028F0")),
         ROBOTS='<meta name="robots" content="noindex, nofollow">' if site.get("noindex", True) else "",
         OG=og,
     )
@@ -218,8 +218,29 @@ def build_project(folder: Path, site: dict) -> dict | None:
     return project
 
 
-def main() -> int:
+BRAND_DEFAULTS = {
+    "name": "Brasfield & Gorrie",
+    "tagline": "360° Pursuit Walkthroughs",
+    "accent": "#0028F0",
+}
+# values that shipped as placeholders; treat them as "not set"
+LEGACY_PLACEHOLDERS = {
+    "name": {"", "Your Company"},
+    "tagline": {"", "360° project walkthroughs"},
+    "accent": {"", "#f2994a"},
+}
+
+
+def load_site() -> dict:
     site = load_json(ROOT / "site.json", {})
+    for key, default in BRAND_DEFAULTS.items():
+        if str(site.get(key) or "").strip() in LEGACY_PLACEHOLDERS[key] or (key == "accent" and str(site.get(key, "")).lower() == "#f2994a"):
+            site[key] = default
+    return site
+
+
+def main() -> int:
+    site = load_site()
     if OUT.exists():
         shutil.rmtree(OUT)
     shutil.copytree(STATIC, OUT)
@@ -244,15 +265,15 @@ def main() -> int:
     home_data = json.dumps({"site": public_site, "projects": listing}, ensure_ascii=False).replace("</", "<\\/")
     (OUT / "index.html").write_text(
         render("home.html", ASSETS="assets", DATA=home_data, COMPANY=esc(site.get("name", "")),
-               TAGLINE=esc(site.get("tagline", "")), ACCENT=esc(site.get("accent", "#f2994a")),
+               TAGLINE=esc(site.get("tagline", "")), ACCENT=esc(site.get("accent", "#0028F0")),
                ROBOTS='<meta name="robots" content="noindex, nofollow">' if site.get("noindex", True) else ""),
         encoding="utf-8",
     )
     (OUT / "404.html").write_text(
         "<!doctype html><meta charset=utf-8><meta name=viewport content='width=device-width,initial-scale=1'>"
         "<title>Not found</title><body style='margin:0;min-height:100vh;display:grid;place-items:center;"
-        "font:16px system-ui,sans-serif;background:#111418;color:#e8eaed;text-align:center;padding:24px'>"
-        f"<div><h1 style='font-weight:600'>This view isn't available</h1><p style='opacity:.7'>"
+        "font:16px system-ui,sans-serif;background:#00143C;color:#fff;text-align:center;padding:24px'>"
+        f"<div><h1 style='font-weight:600'>This walkthrough isn't available</h1><p style='opacity:.75'>"
         f"The link may have changed. Please contact {esc(site.get('name', 'us'))} for an updated QR code.</p></div>",
         encoding="utf-8",
     )

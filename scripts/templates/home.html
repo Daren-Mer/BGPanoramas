@@ -3,33 +3,44 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#0d0f12">
+<meta name="theme-color" content="#00143C">
 {{ROBOTS}}
-<title>{{COMPANY}}</title>
+<title>{{COMPANY}} · {{TAGLINE}}</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,300..800&display=swap">
+<link rel="icon" type="image/png" href="{{ASSETS}}/brand/favicon.png">
+<link rel="apple-touch-icon" href="{{ASSETS}}/brand/apple-touch-icon.png">
 <link rel="stylesheet" href="{{ASSETS}}/app.css">
 <style>:root{--accent:{{ACCENT}}}</style>
 </head>
 <body class="home">
+<header class="home-band">
+  <div class="home-band-inner">
+    <a class="brand-row" href="./" aria-label="Brasfield &amp; Gorrie">
+      <img class="brand-lockup" src="{{ASSETS}}/brand/bg-horizontal-white.png" alt="Brasfield &amp; Gorrie" width="867" height="98">
+    </a>
+    <span class="eyebrow">Pursuits</span>
+  </div>
+</header>
 <main class="home-wrap">
-  <header class="home-hero">
-    <div class="brand-mini" id="brand"></div>
-    <div><h1>{{COMPANY}}</h1><p>{{TAGLINE}}</p></div>
-  </header>
+  <section class="home-hero">
+    <span class="eyebrow">{{TAGLINE}}</span>
+    <h1>Explore the project<br><em>in 360°</em></h1>
+    <p>Step inside the spaces we're proposing to build. Look around, zoom in, and move between views right from your phone.</p>
+  </section>
   <div class="grid" id="grid"></div>
   <div class="empty-note" id="empty" hidden>
-    <div class="big">360°</div>
-    <h2>Scan your project's QR code</h2>
-    <p>Each project has its own private link. If you were sent one, open it to see your 360° views.</p>
+    <h2>Scan your pursuit's QR code</h2>
+    <p>Each pursuit has its own private link. If our team sent you one, open it to explore your project in 360°.</p>
   </div>
 </main>
+<footer class="home-foot">&copy; <span id="yr"></span> {{COMPANY}}</footer>
 <script type="application/json" id="data">{{DATA}}</script>
 <script>
 (function () {
   var D = JSON.parse(document.getElementById("data").textContent), site = D.site || {};
-  var b = document.getElementById("brand");
-  if (site.logo) { var i = new Image(); i.src = site.logo; b.appendChild(i); }
-  else if (site.name) b.textContent = site.name.split(/\s+/).map(function (w) { return w[0]; }).join("").slice(0, 3).toUpperCase();
-  else b.hidden = true;
+  document.getElementById("yr").textContent = new Date().getFullYear();
   var grid = document.getElementById("grid");
   if (!D.projects.length) { document.getElementById("empty").hidden = false; return; }
   D.projects.forEach(function (p) {

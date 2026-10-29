@@ -5,6 +5,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 {{ROBOTS}}
 <title>QR code · {{TITLE}}</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,300..800&display=swap">
+<link rel="icon" type="image/png" href="{{ASSETS}}/brand/favicon.png">
+<link rel="apple-touch-icon" href="{{ASSETS}}/brand/apple-touch-icon.png">
 <link rel="stylesheet" href="{{ASSETS}}/app.css">
 <link rel="stylesheet" href="{{ASSETS}}/qrcard.css">
 <style>:root{--accent:{{ACCENT}}}</style>
@@ -13,8 +18,10 @@
 <main class="qr-layout">
   <section class="tools">
     <a class="back" href="../">← Open the 360° view</a>
+    <img class="tools-symbol" src="{{ASSETS}}/brand/bg-symbol-white.png" alt="" width="245" height="206">
+    <p class="eyebrow">Pursuits</p>
     <h1>QR code</h1>
-    <p class="lede">Print this card, add it to a sign or proposal, or text the image to your client. Anyone who scans it opens the 360° view on their phone.</p>
+    <p class="lede">Print this card, drop it into the proposal or interview deck, or text the image to the owner. Anyone who scans it opens the 360° view on their phone.</p>
 
     <label class="field">
       <span>QR opens</span>
@@ -40,15 +47,17 @@
 
   <section class="card-preview">
     <article class="print-card" id="card">
-      <header>
-        <div class="pc-brand" id="pc-brand"></div>
-        <div class="pc-company" id="pc-company"></div>
+      <header class="pc-band">
+        <img class="pc-lockup" id="pc-lockup" src="{{ASSETS}}/brand/bg-horizontal-white.png" alt="Brasfield &amp; Gorrie" width="867" height="98">
       </header>
-      <h2 id="pc-title">{{TITLE}}</h2>
-      <p class="pc-sub" id="pc-sub"></p>
-      <div class="pc-qr"><canvas id="qr"></canvas></div>
-      <p class="pc-cta" id="pc-cta">Scan to explore in 360°</p>
-      <p class="pc-url" id="pc-url"></p>
+      <div class="pc-body">
+        <p class="pc-eyebrow">Pursuit · 360° walkthrough</p>
+        <h2 id="pc-title">{{TITLE}}</h2>
+        <p class="pc-sub" id="pc-sub"></p>
+        <div class="pc-qr"><canvas id="qr"></canvas></div>
+        <p class="pc-cta" id="pc-cta">Scan to explore in 360°</p>
+        <p class="pc-url" id="pc-url"></p>
+      </div>
     </article>
   </section>
 </main>

@@ -29,6 +29,9 @@
         c.repo = c.repo || (seg.length > 1 ? seg[0] : host);
       }
     }
+    // Custom domain (e.g. gbpursuits.com): fall back to the repo this site is published from
+    c.owner = c.owner || "Daren-Mer";
+    c.repo = c.repo || "BGPanoramas";
     c.maxWidth = c.maxWidth || (IS_IOS ? 5760 : 8192);
     return c;
   }
@@ -242,7 +245,7 @@
       "</form>" +
       '<details class="help"' + (guess ? "" : " open") + "><summary>How to get a token (2 minutes, one time)</summary><ol>" +
       '<li>Open <a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener">GitHub → New fine-grained token</a>.</li>' +
-      "<li>Name it <b>Panorama Manager</b>. Pick an expiration (you can choose up to a year, or no expiration).</li>" +
+      "<li>Name it <b>Pursuit Manager</b>. Pick an expiration (you can choose up to a year, or no expiration).</li>" +
       "<li>Repository access: <b>Only select repositories</b> → choose <b>" + h(cfg.repo || "your panorama repo") + "</b>.</li>" +
       "<li>Permissions → Repository permissions: <b>Contents: Read and write</b>. Optional: <b>Actions: Read-only</b> to see publishing status here.</li>" +
       "<li>Generate, copy, and paste it above.</li></ol>" +
@@ -268,10 +271,10 @@
   function viewList() {
     var visible = projects;
     app.innerHTML =
-      '<div class="list-head"><div><h1>Projects</h1><p class="sub">' + projects.length + " project" + (projects.length === 1 ? "" : "s") +
+      '<div class="list-head"><div><h1>Pursuits</h1><p class="sub">' + projects.length + " pursuit" + (projects.length === 1 ? "" : "s") +
       ' · <a href="' + h(siteBase()) + '" target="_blank" rel="noopener">open site</a></p></div>' +
-      '<button class="btn primary" id="new">+ New project</button></div>' +
-      (projects.length > 6 ? '<input class="search" id="q" placeholder="Search projects or clients">' : "") +
+      '<button class="btn primary" id="new">+ New pursuit</button></div>' +
+      (projects.length > 6 ? '<input class="search" id="q" placeholder="Search pursuits or clients">' : "") +
       '<div class="plist" id="plist"></div>';
     function draw(q) {
       q = (q || "").toLowerCase();
@@ -281,7 +284,7 @@
       });
       if (!items.length) {
         list.innerHTML = '<div class="empty">' + (projects.length ? "No matches." :
-          "<b>No projects yet.</b><br>Create one, then drop in your 360° panoramas.") + "</div>";
+          "<b>No pursuits yet.</b><br>Create one, then drop in your 360° panoramas.") + "</div>";
         return;
       }
       list.innerHTML = items.map(function (p) {
@@ -306,10 +309,10 @@
 
   function newProjectModal() {
     modal(
-      "<h2>New project</h2>" +
+      "<h2>New pursuit</h2>" +
       '<form id="np" class="form">' +
-      '<label>Project name<input name="title" required placeholder="e.g. Smith Residence – Framing" autofocus></label>' +
-      '<label>Client <span class="opt">(optional)</span><input name="client" placeholder="e.g. John Smith"></label>' +
+      '<label>Pursuit name<input name="title" required placeholder="e.g. Lakeside Medical Tower" autofocus></label>' +
+      '<label>Owner / client <span class="opt">(optional)</span><input name="client" placeholder="e.g. Orlando Health"></label>' +
       '<label class="inline"><input type="checkbox" name="secret" checked> Hard-to-guess link <span class="opt">(recommended)</span></label>' +
       '<p class="hint-text" id="slug-preview"></p>' +
       '<div class="modal-actions"><button type="button" class="btn" data-close>Cancel</button><button class="btn primary" type="submit">Create</button></div>' +
@@ -339,16 +342,16 @@
   // ---------------------------------------------------------------- views: project
   function viewProject(slug) {
     var p = projects.filter(function (x) { return x.slug === slug; })[0];
-    if (!p) { app.innerHTML = '<section class="panel narrow"><h1>Project not found</h1><p><a href="#/">Back to projects</a></p></section>'; return; }
+    if (!p) { app.innerHTML = '<section class="panel narrow"><h1>Pursuit not found</h1><p><a href="#/">Back to pursuits</a></p></section>'; return; }
     if (!draft || draft.slug !== slug) draft = makeDraft(p);
     var d = draft, url = siteBase() + "p/" + slug + "/";
 
     app.innerHTML =
-      '<a class="back" href="#/">← All projects</a>' +
+      '<a class="back" href="#/">← All pursuits</a>' +
       '<div class="proj-grid">' +
       '<section class="panel">' +
-      '<div class="ptitle-row"><input class="ptitle" id="m-title" value="' + h(d.meta.title || "") + '" placeholder="Project name" aria-label="Project name"></div>' +
-      '<div class="row2"><label>Client<input id="m-client" value="' + h(d.meta.client || "") + '"></label>' +
+      '<div class="ptitle-row"><input class="ptitle" id="m-title" value="' + h(d.meta.title || "") + '" placeholder="Pursuit name" aria-label="Pursuit name"></div>' +
+      '<div class="row2"><label>Owner / client<input id="m-client" value="' + h(d.meta.client || "") + '"></label>' +
       '<label>Date<input id="m-date" type="date" value="' + h(d.meta.date || "") + '"></label></div>' +
       '<label>Description <span class="opt">(shown to your client)</span><textarea id="m-desc" rows="2">' + h(d.meta.description || "") + "</textarea></label>" +
       '<div class="pano-head"><h2>Panoramas <span class="count" id="count"></span></h2></div>' +
@@ -363,12 +366,12 @@
       '<input class="url" readonly value="' + h(url) + '" id="url">' +
       '<div class="btn-row"><button class="btn" id="copy">Copy link</button><a class="btn" href="' + h(url) + '" target="_blank" rel="noopener">Open</a>' +
       '<a class="btn" href="' + h(url) + 'qr/" target="_blank" rel="noopener">QR card</a></div>' +
-      '<p class="hint-text">The link stays the same forever, even if you rename the project or change panoramas — printed QR codes keep working.</p></div>' +
+      '<p class="hint-text">The link stays the same forever, even if you rename the pursuit or change panoramas — printed QR codes keep working.</p></div>' +
       "</section>" +
       '<section class="panel slim">' +
-      '<label class="inline"><input type="checkbox" id="m-hidden"' + (d.meta.hidden ? " checked" : "") + "> Hide this project (link stops working until you un-hide it)</label>" +
+      '<label class="inline"><input type="checkbox" id="m-hidden"' + (d.meta.hidden ? " checked" : "") + "> Hide this pursuit (link stops working until you un-hide it)</label>" +
       '<label class="inline"><input type="checkbox" id="m-rotate"' + (d.meta.autoRotate === false ? "" : " checked") + "> Slowly spin when it opens</label>" +
-      '<button class="btn danger" id="del">Delete project…</button>' +
+      '<button class="btn danger" id="del">Delete pursuit…</button>' +
       "</section></aside></div>" +
       '<div class="savebar" id="savebar" hidden><span id="save-msg">Unsaved changes</span>' +
       '<div><button class="btn" id="discard">Discard</button><button class="btn primary" id="save">Save & publish</button></div></div>';
@@ -457,7 +460,7 @@
           if (a === "up" && idx > 0) { arr.splice(idx - 1, 0, arr.splice(idx, 1)[0]); }
           else if (a === "down" && idx < arr.length - 1) { arr.splice(idx + 1, 0, arr.splice(idx, 1)[0]); }
           else if (a === "rm") {
-            if (!it.upload && !confirm("Delete “" + it.title + "” from this project?")) return;
+            if (!it.upload && !confirm("Delete “" + it.title + "” from this pursuit?")) return;
             arr.splice(idx, 1);
             if (!it.upload) draft.removed.push(it.file);
             else if (it.upload.thumbUrl) URL.revokeObjectURL(it.upload.thumbUrl);
@@ -562,7 +565,7 @@
     if (busy) return;
     var d = draft, p = d.project;
     var title = (d.meta.title || "").trim();
-    if (!title) { toast("Give the project a name first"); document.getElementById("m-title").focus(); return; }
+    if (!title) { toast("Give the pursuit a name first"); document.getElementById("m-title").focus(); return; }
     var bad = d.items.filter(function (i) { return i.upload && i.upload.state === "error"; });
     if (bad.length && !confirm(bad.length + " image(s) couldn't be prepared and will be skipped. Continue?")) return;
     d.items = d.items.filter(function (i) { return !(i.upload && i.upload.state === "error"); });
@@ -579,7 +582,7 @@
     changes.push({ path: dir + "project.json", b64: textToB64(JSON.stringify(meta, null, 2) + "\n") });
     d.removed.forEach(function (f) { changes.push({ path: dir + f, delete: true }); });
 
-    var msg = !p.exists ? "Create project " + p.slug + (adds.length ? " with " + adds.length + " panorama(s)" : "") :
+    var msg = !p.exists ? "Create pursuit " + p.slug + (adds.length ? " with " + adds.length + " panorama(s)" : "") :
       adds.length ? "Add " + adds.length + " panorama(s) to " + p.slug : "Update " + p.slug;
 
     busy = true; updateSavebar();
@@ -614,8 +617,8 @@
   function deleteProject(p) {
     modal(
       "<h2>Delete “" + h(title(p)) + "”?</h2>" +
-      "<p>This removes the project and its " + p.files.length + " panorama(s) from the site. Anyone with the link or QR code will no longer be able to open it.</p>" +
-      "<p class=\"hint-text\">Want to keep it but make the link stop working for now? Use “Hide this project” instead.</p>" +
+      "<p>This removes the pursuit and its " + p.files.length + " panorama(s) from the site. Anyone with the link or QR code will no longer be able to open it.</p>" +
+      "<p class=\"hint-text\">Want to keep it but make the link stop working for now? Use “Hide this pursuit” instead.</p>" +
       '<form id="dp" class="form"><label>Type <b>' + h(p.slug) + '</b> to confirm<input name="c" autocomplete="off"></label>' +
       '<div class="modal-actions"><button type="button" class="btn" data-close>Cancel</button><button class="btn danger" type="submit">Delete forever</button></div></form>'
     );
@@ -627,9 +630,9 @@
       var changes = p.files.map(function (f) { return { path: dir + f, delete: true }; });
       if (p.jsonSha) changes.push({ path: dir + "project.json", delete: true });
       e.target.querySelector("[type=submit]").textContent = "Deleting…";
-      commit("Delete project " + p.slug, changes).then(function () {
+      commit("Delete pursuit " + p.slug, changes).then(function () {
         projects = projects.filter(function (x) { return x !== p; });
-        closeModal(); draft = null; toast("Project deleted"); location.hash = "#/"; pollDeploy(true);
+        closeModal(); draft = null; toast("Pursuit deleted"); location.hash = "#/"; pollDeploy(true);
       }, function (err) { closeModal(); alert("Couldn't delete: " + errText(err)); });
     });
   }
@@ -655,18 +658,17 @@
     var s = (siteCfg && siteCfg.data) || {};
     var c = s.contact || {};
     app.innerHTML =
-      '<a class="back" href="#/">← All projects</a>' +
+      '<a class="back" href="#/">← All pursuits</a>' +
       '<section class="panel narrow"><h1>Site settings</h1><p class="sub">Your branding on every client page.</p>' +
       '<form id="sf" class="form">' +
       '<label>Company name<input name="name" value="' + h(s.name || "") + '"></label>' +
       '<label>Tagline<input name="tagline" value="' + h(s.tagline || "") + '"></label>' +
-      '<div class="row2"><label>Accent color<input name="accent" type="color" value="' + h(s.accent || "#f2994a") + '"></label>' +
-      '<label>Logo <span class="opt">(square PNG/SVG)</span><input name="logo" type="file" accept="image/png,image/svg+xml,image/jpeg"></label></div>' +
-      (s.logo ? '<p class="hint-text">Current logo: ' + h(s.logo) + ' <button type="button" class="linkish" id="rmlogo">remove</button></p>' : "") +
+      '<label>Accent color<input name="accent" type="color" value="' + h(s.accent || "#0028F0") + '"></label>' +
+      '<p class="hint-text">The Brasfield &amp; Gorrie lockup and symbol are built in.</p>' +
       '<div class="row2"><label>Phone<input name="phone" value="' + h(c.phone || "") + '"></label>' +
       '<label>Email<input name="email" type="email" value="' + h(c.email || "") + '"></label></div>' +
       '<label>Website<input name="website" value="' + h(c.website || "") + '"></label>' +
-      '<label class="inline"><input type="checkbox" name="listProjects"' + (s.listProjects ? " checked" : "") + "> Show all projects on the home page <span class=\"opt\">(off = clients only see the project they were sent)</span></label>" +
+      '<label class="inline"><input type="checkbox" name="listProjects"' + (s.listProjects ? " checked" : "") + "> Show all pursuits on the home page <span class=\"opt\">(off = clients only see the pursuit they were sent)</span></label>" +
       '<label>Max panorama width when uploading from this device' +
       '<select name="maxWidth">' + [[4096, "4096 px (smallest files)"], [5760, "5760 px (best for iPhone uploads)"], [8192, "8192 px (sharpest, recommended)"], [0, "Keep original size"]].map(function (o) {
         return '<option value="' + o[0] + '"' + (Number(cfg.maxWidth) === o[0] ? " selected" : "") + ">" + o[1] + "</option>";
@@ -677,9 +679,6 @@
       '<a class="btn" href="' + h(repo ? repo.htmlUrl : "#") + '" target="_blank" rel="noopener">Open repo on GitHub</a>' +
       '<button class="btn" id="signout">Sign out on this device</button></div></section>';
 
-    var rmLogo = false;
-    var rl = document.getElementById("rmlogo");
-    if (rl) rl.addEventListener("click", function () { rmLogo = true; rl.parentNode.textContent = "Logo will be removed when you save."; });
     document.getElementById("signout").addEventListener("click", function () {
       cfg.token = ""; saveCfg(); try { localStorage.removeItem(LS); sessionStorage.removeItem(LS); } catch (e) {}
       repo = null; location.hash = "#/"; route();
@@ -692,12 +691,7 @@
       data.contact = { phone: f.phone.value.trim(), email: f.email.value.trim(), website: f.website.value.trim() };
       data.listProjects = f.listProjects.checked;
       var changes = [];
-      var logo = f.logo.files[0];
-      if (logo) {
-        var ext = (logo.name.match(/\.(png|svg|jpe?g)$/i) || [".png"])[0].toLowerCase();
-        data.logo = "assets/logo" + ext;
-        changes.push({ path: "site/assets/logo" + ext, blob: logo });
-      } else if (rmLogo) { data.logo = ""; }
+      data.logo = "";
       changes.push({ path: "site.json", b64: textToB64(JSON.stringify(data, null, 2) + "\n") });
       var btn = f.querySelector("[type=submit]"); btn.textContent = "Saving…"; btn.disabled = true;
       commit("Update site settings", changes).then(function () {

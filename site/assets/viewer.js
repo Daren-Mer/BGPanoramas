@@ -6,19 +6,6 @@
   var $ = function (id) { return document.getElementById(id); };
   var isTouch = matchMedia("(pointer: coarse)").matches;
 
-  // ---------- brand ----------
-  var brand = $("brand");
-  if (site.logo) {
-    var img = new Image();
-    img.src = "../../" + site.logo.replace(/^\/+/, "");
-    img.alt = site.name || "";
-    brand.appendChild(img);
-  } else if (site.name) {
-    brand.textContent = site.name.split(/\s+/).map(function (w) { return w[0]; }).join("").slice(0, 3).toUpperCase();
-  } else {
-    brand.hidden = true;
-  }
-
   // ---------- viewer ----------
   var byId = {};
   scenes.forEach(function (s) { byId[s.id] = s; });
@@ -192,7 +179,6 @@
   $("info-desc").textContent = project.description || "";
   $("info-desc").hidden = !project.description;
   var c = site.contact || {}, contact = $("info-contact");
-  if (site.name) addLine(contact, "strong", site.name);
   if (c.phone) addLink(contact, "tel:" + c.phone.replace(/[^\d+]/g, ""), c.phone);
   if (c.email) addLink(contact, "mailto:" + c.email, c.email);
   if (c.website) addLink(contact, /^https?:/.test(c.website) ? c.website : "https://" + c.website, c.website.replace(/^https?:\/\//, ""));

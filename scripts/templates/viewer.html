@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#0d0f12">
+<meta name="theme-color" content="#00143C">
 <meta name="apple-mobile-web-app-capable" content="yes">
 {{ROBOTS}}
 <title>{{TITLE}} · {{COMPANY}}</title>
@@ -12,6 +12,11 @@
 <meta property="og:description" content="{{DESCRIPTION}}">
 <meta property="og:type" content="website">
 {{OG}}
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,300..800&display=swap">
+<link rel="icon" type="image/png" href="{{ASSETS}}/brand/favicon.png">
+<link rel="apple-touch-icon" href="{{ASSETS}}/brand/apple-touch-icon.png">
 <link rel="stylesheet" href="{{ASSETS}}/vendor/pannellum.css">
 <link rel="stylesheet" href="{{ASSETS}}/app.css">
 <style>:root{--accent:{{ACCENT}}}</style>
@@ -20,12 +25,12 @@
 <div id="pano" aria-label="360 degree panorama"></div>
 
 <header class="bar top glass">
-  <div class="brand-mini" id="brand"></div>
+  <img class="brand-symbol" src="{{ASSETS}}/brand/bg-symbol-white.png" alt="Brasfield &amp; Gorrie" width="245" height="206">
   <div class="titles">
     <h1 id="project-title">{{TITLE}}</h1>
     <p id="scene-title"></p>
   </div>
-  <button class="icon-btn" id="btn-info" aria-label="Project info">
+  <button class="icon-btn" id="btn-info" aria-label="Pursuit info">
     <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9.5"/><path d="M12 11v6M12 7.5v.01"/></svg>
   </button>
 </header>
@@ -65,12 +70,12 @@
   <label class="check"><input type="checkbox" id="share-scene"> Open on <strong id="share-scene-name"></strong></label>
   <a class="small-link" href="qr/">Printable QR card →</a>
 </section>
-<section class="sheet glass" id="sheet-info" hidden aria-label="Project info">
+<section class="sheet glass" id="sheet-info" hidden aria-label="Pursuit info">
   <div class="sheet-grab"></div>
   <h2 id="info-title"></h2>
   <p class="muted" id="info-meta"></p>
   <p id="info-desc"></p>
-  <div class="contact" id="info-contact"></div>
+  <div class="contact" id="info-contact"><img class="contact-logo" src="{{ASSETS}}/brand/bg-horizontal-white.png" alt="Brasfield &amp; Gorrie" width="867" height="98"></div>
   <p class="howto">Drag or swipe to look around · Pinch or scroll to zoom<span id="howto-gyro"> · Tap <b>phone</b> button to look by moving your device</span></p>
 </section>
 <div class="toast" id="toast" hidden></div>

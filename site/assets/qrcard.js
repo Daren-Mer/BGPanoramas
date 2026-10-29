@@ -5,14 +5,6 @@
   var $ = function (id) { return document.getElementById(id); };
   var viewerUrl = new URL("../", location.href).href.split("#")[0];
 
-  // brand
-  if (site.logo) {
-    var img = new Image(); img.src = "../../../" + site.logo.replace(/^\/+/, ""); $("pc-brand").appendChild(img);
-    $("pc-brand").style.background = "transparent";
-  } else if (site.name) {
-    $("pc-brand").textContent = site.name.split(/\s+/).map(function (w) { return w[0]; }).join("").slice(0, 3).toUpperCase();
-  } else $("pc-brand").hidden = true;
-  $("pc-company").textContent = site.name || "";
   $("pc-sub").textContent = project.client || "";
 
   // targets
@@ -31,7 +23,7 @@
     $("pc-cta").textContent = $("heading").value;
     var box = document.querySelector(".pc-qr");
     var size = Math.min(box.clientWidth, Math.max(box.clientHeight, 180), 260);
-    QR.draw($("qr"), u, size, { margin: 1, ecl: "Q" });
+    QR.draw($("qr"), u, size, { margin: 1, ecl: "Q", fg: "#00143C" });
   }
   $("target").addEventListener("change", render);
   $("heading").addEventListener("input", render);
@@ -48,12 +40,12 @@
   function fileBase() { return (project.slug || "project") + ($("target").value ? "-" + $("target").value : ""); }
 
   $("dl-svg").addEventListener("click", function () {
-    var blob = new Blob([QR.svg(url(), { margin: 2, ecl: "Q" })], { type: "image/svg+xml" });
+    var blob = new Blob([QR.svg(url(), { margin: 2, ecl: "Q", fg: "#00143C" })], { type: "image/svg+xml" });
     download(URL.createObjectURL(blob), fileBase() + "-qr.svg");
   });
   $("dl-png").addEventListener("click", function () {
     var c = document.createElement("canvas");
-    QR.draw(c, url(), 1024, { margin: 2, ecl: "Q", pixelRatio: 1 });
+    QR.draw(c, url(), 1024, { margin: 2, ecl: "Q", pixelRatio: 1, fg: "#00143C" });
     c.toBlob(function (b) { download(URL.createObjectURL(b), fileBase() + "-qr.png"); });
   });
   $("dl-card").addEventListener("click", function () { drawCard().then(function (b) { download(URL.createObjectURL(b), fileBase() + "-qr-card.png"); }); });
@@ -62,22 +54,52 @@
     var W = 1200, H = 1600, c = document.createElement("canvas");
     c.width = W; c.height = H;
     var g = c.getContext("2d");
-    var accent = getComputedStyle(document.documentElement).getPropertyValue("--accent").trim() || "#f2994a";
+    var css = getComputedStyle(document.documentElement);
+    var accent = css.getPropertyValue("--accent").trim() || "#0028F0";
+    var NAVY = "#00143C", NAVY4 = "#002070", GRAY = "#5a6178";
     var font = getComputedStyle(document.body).fontFamily;
+    // condensed display type where the browser supports it (Archivo / Sharp Grotesk)
+    function display(px, weight, stretch) {
+      g.font = (weight || 600) + " " + (stretch || "condensed") + " " + px + "px " + font;
+    }
+    function body(px, weight) {
+      g.font = (weight || 400) + " " + px + "px " + font;
+    }
+    if ("letterSpacing" in g) g.letterSpacing = "0px";
     g.fillStyle = "#fff"; g.fillRect(0, 0, W, H);
-    g.fillStyle = accent; g.fillRect(0, 0, W, 22);
+    // header band
+    g.fillStyle = NAVY; g.fillRect(0, 0, W, 150);
+    g.fillStyle = accent; g.fillRect(0, 150, W, 10);
     g.textAlign = "center"; g.textBaseline = "alphabetic";
-    g.fillStyle = "#15171b";
-    g.font = "600 40px " + font; g.fillText(site.name || "", W / 2, 120);
-    g.font = "700 72px " + font;
-    var lines = wrap(g, project.title, W / 2, 250, W - 160, 84, 2);
-    g.fillStyle = "#5d6168"; g.font = "400 40px " + font; g.fillText(project.client || "", W / 2, 250 + (lines - 1) * 84 + 70);
+    // official lockup, centered in the band (clear space kept by the band padding)
+    var logo = $("pc-lockup");
+    if (logo && logo.complete && logo.naturalWidth) {
+      var lw = 560, lh = lw * logo.naturalHeight / logo.naturalWidth;
+      g.drawImage(logo, (W - lw) / 2, (150 - lh) / 2, lw, lh);
+    }
+    if ("letterSpacing" in g) g.letterSpacing = "6px";
+    // eyebrow
+    g.fillStyle = accent; body(26, 600);
+    g.fillText("PURSUIT  ·  360° WALKTHROUGH", W / 2, 232);
+    if ("letterSpacing" in g) g.letterSpacing = "0px";
+    // title + client
+    g.fillStyle = NAVY4; display(84, 600, "extra-condensed");
+    var lines = wrap(g, project.title, W / 2, 318, W - 140, 88, 2);
+    g.fillStyle = GRAY; body(38, 400);
+    g.fillText(project.client || "", W / 2, 318 + (lines - 1) * 88 + 62);
+    // QR in brand navy
+    var qSize = lines > 1 ? 720 : 780, qTop = lines > 1 ? 520 : 460;
     var q = document.createElement("canvas");
-    QR.draw(q, url(), 820, { margin: 1, ecl: "Q", pixelRatio: 1 });
+    QR.draw(q, url(), qSize, { margin: 1, ecl: "Q", pixelRatio: 1, fg: NAVY });
     g.imageSmoothingEnabled = false;
-    g.drawImage(q, (W - 820) / 2, 450, 820, 820);
-    g.fillStyle = "#15171b"; g.font = "700 54px " + font; g.fillText($("heading").value, W / 2, 1380);
-    g.fillStyle = "#6b6f76"; g.font = "400 30px " + font; wrap(g, url().replace(/^https?:\/\//, ""), W / 2, 1450, W - 160, 38, 3);
+    g.drawImage(q, (W - qSize) / 2, qTop, qSize, qSize);
+    // CTA + url
+    g.fillStyle = accent; display(76, 700, "ultra-condensed");
+    g.fillText($("heading").value.toUpperCase(), W / 2, 1400);
+    g.fillStyle = GRAY; body(30, 400);
+    wrap(g, url().replace(/^https?:\/\//, ""), W / 2, 1464, W - 160, 38, 2);
+    // bottom bar
+    g.fillStyle = accent; g.fillRect(0, H - 24, W, 24);
     return new Promise(function (ok) { c.toBlob(ok, "image/png"); });
   }
   function wrap(g, text, x, y, maxW, lh, maxLines) {
